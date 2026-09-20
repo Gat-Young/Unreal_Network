@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -28,11 +28,18 @@ public:
 	/** 로컬 플레이어의 에이전트 (없으면 nullptr) */
 	static ANetChatAgent* GetLocalAgent(UWorld* World);
 
+	/** 로그인한 계정 이름을 서버의 PlayerState에 반영 */
+	UFUNCTION(Server, Reliable)
+	void ServerSetName(const FString& Name);
+
 	UFUNCTION(Server, Reliable)
 	void ServerSendChat(const FString& Message);
 
 	UFUNCTION(Client, Reliable)
 	void ClientReceiveChat(const FString& Sender, const FString& Message);
+
+	/** 로비에서 로그인한 이름 (에이전트가 로컬에서 생성될 때 서버로 전달) */
+	static FString LocalUserName;
 
 	static FOnNetChatReceived OnChatReceived;
 	static FOnNetChatOpenRequested OnChatOpenRequested;

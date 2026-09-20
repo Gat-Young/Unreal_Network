@@ -1,4 +1,4 @@
-#include "NetChatAgent.h"
+﻿#include "NetChatAgent.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/GameModeBase.h"
@@ -9,6 +9,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogNetChat, Log, All);
 
+FString ANetChatAgent::LocalUserName;
 FOnNetChatReceived ANetChatAgent::OnChatReceived;
 FOnNetChatOpenRequested ANetChatAgent::OnChatOpenRequested;
 
@@ -68,6 +69,10 @@ void ANetChatAgent::TryInitLocal()
 		return;
 	}
 	bLocalInit = true;
+	if (!LocalUserName.IsEmpty())
+	{
+		ServerSetName(LocalUserName);
+	}
 	EnableInput(PC);
 	if (InputComponent)
 	{
@@ -78,6 +83,16 @@ void ANetChatAgent::TryInitLocal()
 void ANetChatAgent::OnEnterPressed()
 {
 	OnChatOpenRequested.Broadcast();
+}
+
+void ANetChatAgent::ServerSetName_Implementation(const FString& Name)
+{
+	const APlayerController* PC = Cast<APlayerController>(GetOwner());
+	const FString Clean = Name.TrimStartAndEnd().Left(32);
+	if (PC && PC->PlayerState && !Clean.IsEmpty())
+	{
+		PC->PlayerState->SetPlayerName(Clean);
+	}
 }
 
 void ANetChatAgent::ServerSendChat_Implementation(const FString& Message)
