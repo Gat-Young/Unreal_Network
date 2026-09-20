@@ -31,5 +31,12 @@
 			"Name": "AIAssistant",
 			"Enabled": true
 		}
+	],
+	"Modules": [
+		{
+			"Name": "Unreal_NetWork",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
 	]
 }
